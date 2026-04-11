@@ -2,7 +2,7 @@
 
 client_id = "8528e9cec86ee146e4db0220d77ecc9a"
 name = "Snaplist"
-application_url = "https://shopify.dev/apps/default-app-home"
+application_url = "https://snaplist-production.up.railway.app"
 embedded = true
 
 [build]
@@ -29,4 +29,4 @@ api_version = "2026-07"
 scopes = "read_products,write_products"
 
 [auth]
-redirect_urls = [ "https://shopify.dev/apps/default-app-home/api/auth" ]
+redirect_urls = [ "https://snaplist-production.up.railway.app/api/auth" ]
