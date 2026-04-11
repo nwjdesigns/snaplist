@@ -2,7 +2,12 @@ import { authenticate } from "../shopify.server";
 import db from "../db.server";
 
 export const action = async ({ request }) => {
-  const { shop, session, topic } = await authenticate.webhook(request);
+  let shop, session, topic;
+  try {
+    ({ shop, session, topic } = await authenticate.webhook(request));
+  } catch (error) {
+    return new Response("Unauthorized", { status: 401 });
+  }
 
   console.log(`Received ${topic} webhook for ${shop}`);
 
