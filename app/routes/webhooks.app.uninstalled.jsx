@@ -11,6 +11,10 @@ export const action = async ({ request }) => {
 
   console.log(`Received ${topic} webhook for ${shop}`);
 
+  // Clean up all shop data on uninstall
+  await db.generation.deleteMany({ where: { shop } });
+  await db.push.deleteMany({ where: { shop } });
+
   // Webhook requests can trigger multiple times and after an app has already been uninstalled.
   // If this webhook already ran, the session may have been deleted previously.
   if (session) {

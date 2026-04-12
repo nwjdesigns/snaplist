@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useLoaderData, useFetcher, useNavigate } from "@remix-run/react";
+import DOMPurify from "isomorphic-dompurify";
 import {
   json,
   unstable_parseMultipartFormData,
@@ -240,6 +241,10 @@ export const action = async ({ request, params }) => {
   return json({ error: "Unknown action" }, { status: 400 });
 };
 
+function sanitizeHtml(html) {
+  return DOMPurify.sanitize(html || "");
+}
+
 // --- Components ---
 
 const PROGRESS_STEPS = [
@@ -297,7 +302,7 @@ function ComparisonField({ label, before, after }) {
             </Text>
             <div
               style={{ marginTop: "4px" }}
-              dangerouslySetInnerHTML={{ __html: before || "<em>Empty</em>" }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(before) || "<em>Empty</em>" }}
             />
           </Box>
           <Box
@@ -311,7 +316,7 @@ function ComparisonField({ label, before, after }) {
             </Text>
             <div
               style={{ marginTop: "4px" }}
-              dangerouslySetInnerHTML={{ __html: after || "<em>Empty</em>" }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(after) || "<em>Empty</em>" }}
             />
           </Box>
         </InlineStack>
@@ -694,7 +699,7 @@ export default function ProductPage() {
                         <div
                           style={{ marginTop: "4px" }}
                           dangerouslySetInnerHTML={{
-                            __html: current.description,
+                            __html: sanitizeHtml(current.description),
                           }}
                         />
                       </Box>
@@ -858,7 +863,7 @@ export default function ProductPage() {
                       <Text variant="headingSm">Description</Text>
                       <div
                         dangerouslySetInnerHTML={{
-                          __html: product.descriptionHtml,
+                          __html: sanitizeHtml(product.descriptionHtml),
                         }}
                       />
                     </BlockStack>
