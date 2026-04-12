@@ -111,7 +111,7 @@ export async function createProSubscription(admin) {
     {
       variables: {
         name: PRO_PLAN,
-        test: true, // TODO: set to false when ready for real merchant charges
+        test: process.env.NODE_ENV !== "production",
         returnUrl: `${process.env.SHOPIFY_APP_URL}/app/billing`,
         lineItems: [
           {
