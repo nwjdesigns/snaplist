@@ -36,8 +36,13 @@ export const action = async ({ request }) => {
   const intent = formData.get("intent");
 
   if (intent === "subscribe") {
-    const confirmationUrl = await createProSubscription(admin);
-    return redirect(confirmationUrl);
+    try {
+      const confirmationUrl = await createProSubscription(admin);
+      return redirect(confirmationUrl);
+    } catch (error) {
+      console.error("[billing] Subscription creation failed:", error.message);
+      return json({ error: error.message }, { status: 500 });
+    }
   }
 
   return json({ error: "Unknown action" }, { status: 400 });
