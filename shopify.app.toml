@@ -40,4 +40,4 @@ api_version = "2026-04"
 scopes = "read_products,write_products"
 
 [auth]
-redirect_urls = [ "https://snaplist-production.up.railway.app/api/auth" ]
+redirect_urls = [ "https://snaplist-production.up.railway.app/auth/callback" ]

@@ -1,5 +1,5 @@
 import { useLoaderData, useFetcher, useNavigate } from "@remix-run/react";
-import { json, redirect } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import {
   Page,
   Layout,
@@ -31,7 +31,7 @@ export const loader = async ({ request }) => {
 };
 
 export const action = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
+  const { admin, redirect } = await authenticate.admin(request);
   const formData = await request.formData();
   const intent = formData.get("intent");
 
@@ -129,7 +129,7 @@ export default function BillingPage() {
                     <p>You're on the Pro plan. Enjoy unlimited generations!</p>
                   </Banner>
                   <Button
-                    url="https://admin.shopify.com/store/settings/billing"
+                    url="shopify:admin/settings/billing"
                     target="_blank"
                     fullWidth
                   >
