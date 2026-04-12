@@ -53,12 +53,22 @@ export default function BillingPage() {
   const fetcher = useFetcher();
   const navigate = useNavigate();
 
+  const error = fetcher.data?.error || null;
+
   return (
     <Page
       backAction={{ onAction: () => navigate("/app") }}
       title="Plans"
     >
       <Layout>
+        {error && (
+          <Layout.Section>
+            <Banner tone="critical" title="Upgrade failed">
+              <p>{error}</p>
+            </Banner>
+          </Layout.Section>
+        )}
+
         <Layout.Section variant="oneHalf">
           <Card>
             <BlockStack gap="400">
@@ -114,9 +124,18 @@ export default function BillingPage() {
                   </Button>
                 </fetcher.Form>
               ) : (
-                <Banner tone="success">
-                  <p>You're on the Pro plan. Enjoy unlimited generations!</p>
-                </Banner>
+                <BlockStack gap="400">
+                  <Banner tone="success">
+                    <p>You're on the Pro plan. Enjoy unlimited generations!</p>
+                  </Banner>
+                  <Button
+                    url="https://admin.shopify.com/store/settings/billing"
+                    target="_blank"
+                    fullWidth
+                  >
+                    Manage subscription
+                  </Button>
+                </BlockStack>
               )}
             </BlockStack>
           </Card>
