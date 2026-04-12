@@ -111,7 +111,7 @@ export async function createProSubscription(admin) {
     {
       variables: {
         name: PRO_PLAN,
-        test: process.env.NODE_ENV !== "production",
+        test: true,
         returnUrl: `${process.env.SHOPIFY_APP_URL}/app/billing`,
         lineItems: [
           {
