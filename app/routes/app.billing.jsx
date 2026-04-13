@@ -124,7 +124,7 @@ export default function BillingPage() {
                   </Button>
                 </fetcher.Form>
               ) : (
-                <BlockStack gap="400">
+                <BlockStack gap="300">
                   <Banner tone="success">
                     <p>You're on the Pro plan. Enjoy unlimited generations!</p>
                   </Banner>
@@ -132,9 +132,13 @@ export default function BillingPage() {
                     url="shopify:admin/settings/billing"
                     target="_blank"
                     fullWidth
+                    variant="primary"
                   >
-                    Manage subscription
+                    Manage or cancel subscription
                   </Button>
+                  <Text variant="bodySm" tone="subdued" alignment="center">
+                    You can downgrade to Free at any time — no questions asked.
+                  </Text>
                 </BlockStack>
               )}
             </BlockStack>
