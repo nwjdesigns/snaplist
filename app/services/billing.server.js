@@ -65,13 +65,16 @@ export async function hasProPlan(admin) {
 export async function checkGenerationAccess(admin, shop) {
   const isPro = await hasProPlan(admin);
 
-  if (isPro) {
+  // Dev stores get unlimited generations for testing and Shopify review
+  const isDevStore = await checkIsDevStore(admin);
+
+  if (isPro || isDevStore) {
     const usage = await getMonthlyUsage(shop);
     return {
-      allowed: usage < PRO_GENERATION_LIMIT,
+      allowed: true,
       usage,
-      limit: null, // Don't expose the hard cap in the UI
-      isPro: true,
+      limit: null,
+      isPro: isPro || isDevStore,
     };
   }
 
@@ -82,6 +85,28 @@ export async function checkGenerationAccess(admin, shop) {
     limit: FREE_GENERATION_LIMIT,
     isPro: false,
   };
+}
+
+/**
+ * Check if the current shop is a development store.
+ */
+async function checkIsDevStore(admin) {
+  try {
+    const response = await admin.graphql(`
+      #graphql
+      query {
+        shop {
+          plan {
+            partnerDevelopment
+          }
+        }
+      }
+    `);
+    const data = await response.json();
+    return data.data.shop.plan.partnerDevelopment === true;
+  } catch {
+    return false;
+  }
 }
 
 /**
