@@ -50,20 +50,23 @@ async function callGeminiWithRetry(model, content) {
       const text = result.response.text();
       const cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
 
+      // Extract the outermost JSON object in case Gemini adds any prefix text
+      const match = cleaned.match(/\{[\s\S]*\}/);
+      if (!match) throw new Error("PARSE_FAIL");
+
       try {
-        return JSON.parse(cleaned);
-      } catch (parseError) {
-        throw new Error(
-          `Invalid response from AI model. The output was not valid JSON. Please try again.`
-        );
+        return JSON.parse(match[0]);
+      } catch {
+        throw new Error("PARSE_FAIL");
       }
     } catch (error) {
       lastError = error;
 
-      // Don't retry on parse errors or non-retryable errors
-      if (error.message.includes("Invalid response") || attempt === MAX_RETRIES) {
+      const isParseError = error.message === "PARSE_FAIL";
+      if (!isParseError && attempt === MAX_RETRIES) {
         throw error;
       }
+      if (!isParseError) throw error;
 
       // Exponential backoff: 1s, 2s, 4s
       const delay = Math.pow(2, attempt - 1) * 1000;
@@ -71,7 +74,7 @@ async function callGeminiWithRetry(model, content) {
     }
   }
 
-  throw lastError;
+  throw new Error("Failed to generate listing: AI returned an invalid response after multiple attempts. Please try again.");
 }
 
 export async function generateListing({ imageUrl, imageBase64, imageMimeType }) {
